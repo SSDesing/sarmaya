@@ -1,0 +1,160 @@
+<div class="container margin-all-10px">
+    <div class="row">
+        <div class="col-sm-4">
+        </div>
+        <div class="col-sm-4">
+            <p>{{transactionsVm.heading}}</p>
+        </div>
+        <div class="col-sm-4">
+        </div>
+    </div>
+
+    <div class="row margin-top-24px">
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-6 padding-1px">
+            <select style="border-bottom: 1px solid;border-top: none; border-left:none; border-right: none;" ng-model=" transactionsVm.type" ng-change="transactionsVm.update(  )" id="example">
+                        <option ng-repeat="account in transactionsVm.accountDetails" >
+                             {{account.accountType}}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                              {{account.accountNumber}}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#8377;{{account.balance}}</option>
+
+                    </select>
+        </div>
+        <div class="col-sm-3">
+        </div>
+    </div>
+    <div class="row margin-top-24px">
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-6" style="border-bottom:1px solid;width:40%">
+            <div class="col-sm-3"><a href="" ng-click="transactionsVm.tabFirst()">
+          Transactions<i class="icon ion-arrow-down-b"></i>
+        </a></div>
+            <div class="col-sm-3"><a href="" class="tab-second-div" ng-click="transactionsVm.tabSecond()">
+            Spend&nbsp;Analysis
+        <i class="icon ion-arrow-down-b"></i></a></div>
+        </div>
+        <div class="col-sm-3">
+        </div>
+    </div>
+    <div class="row margin-top-24px"  ng-show="transactionsVm.tab==1">
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-5 margin-top-24px searchBox">
+            <span><input type="text" placeholder="Search by Date/Range/Tags"
+               ng-model="searchText" class="borderNone"></span>
+            <span class="floatRight"><button class="fa fa-search search-button"
+                type="submit"
+                ng-click="search();"></span>
+        </div>
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-4 button-div">
+            <span style="margin-left:125px;padding:1px">
+            <button type="button" class="button-regular" ng-click="transactionsVm.sendEmail()">Email</button>
+            <button type="button" class="button-white" ng-click="transactionsVm.download()">Download</button>
+            </span>
+        </div>
+
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-1">
+
+        </div>
+      </div>
+        <div class="col-sm-10 b row margin-top-24px border-all" ng-show="transactionsVm.tab==2">
+            <div class="col-sm-4">
+              <div class="col-sm-1">
+            <button type="button" class="button-regular btn-first" ng-click="transactionsVm.sendEmail()">WEEK</button>
+          </div>
+               <div class="col-sm-1">
+            <button type="button" class="button-white btn-second" ng-click="transactionsVm.download()">MONTH</button>
+          </div>
+            <div class="col-sm-1">
+            <button type="button" class="button-regular btn-third" ng-click="transactionsVm.sendEmail()">QUARTER</button>
+          </div>
+            <p ng-if="graphs == 0">
+                <canvas id="doughnut" class="chart chart-doughnut graph-circle" chart-data="transactionsVm.data" chart-labels="transactionsVm.labels">
+            </canvas>
+        </p>
+        <p ng-if="graphs == 1">
+            <canvas id="line" class="chart chart-line graph-line" chart-data="data" chart-labels="labels">
+        </canvas>
+    </p>
+            </div>
+            <div class="col-sm-6 table-responsive" style="float:right">
+                <table class="table margin-top-24px" style="color:#666666">
+                    <thead>
+                        <tr ng-click="overall()">
+                            <th>Overall</th>
+                            <th>100%</th>
+                            <th>&#8377;80000</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat=" data in transactionsVm.graphTable" ng-click="categoryType(data.tagName)">
+                            <td><i ng-style="{'background-color':'{{data.tagColor}}'}">&nbsp;&nbsp;</i> #{{data.tagName}}
+                            </td>
+                            <td>{{data.tagPercentage}}</td>
+                            <td>{{data.tagAmount}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-sm-10 a" ng-show="transactionsVm.tab==1">
+
+            <table class="table table-bordered table-striped" style="margin-top:10px;height:100px">
+                <thead>
+                    <tr>
+                        <td>
+                            <a href="#" ng-click="sortType = 'date'; sortReverse = !sortReverse">
+            Date
+            <span ng-show="sortType == 'date' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'date' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+                        </td>
+                        <td>
+                            Details
+                        </td>
+                        <td>
+                            Tag Name
+                        </td>
+                        <td>
+                            Debit
+                        </td>
+                        <td>
+                            Credit
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="data in transactionsVm.transactionDetails | orderBy:sortType:sortReverse | filter:searchText">
+                        <td>{{ data.date }}</td>
+                        <td>{{ data.details}}</td>
+                        <td>{{ data.tagName}}</td>
+                        <td>{{ data.debit}}</td>
+                        <td>{{ data.credit}}</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+        <div class="col-sm-1">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+
+        </div>
+        <div class="col-sm-4">
+            <a href="" class="view-link"> View More </a>
+        </div>
+        <div class="col-sm-4">
+
+        </div>
+    </div>
+</div>
